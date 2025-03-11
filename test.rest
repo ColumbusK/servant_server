@@ -1,0 +1,24 @@
+@baseUrl = http://127.0.0.1:3001
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2M2ZDg3YzViNWE4MmIxNTZhZTBjYWQiLCJpYXQiOjE3NDEwODQ3OTZ9.-hW0VSZy5dHw1T2v-T9Kft5m7gJjpjQII0jCvJk12Po
+
+GET {{baseUrl}}/api/v1/user
+Authorization: Bearer {{authToken}}
+
+###
+GET {{baseUrl}}/api/v1/question
+Authorization: Bearer {{authToken}}
+
+###
+GET {{baseUrl}}/api/v1/question/67c50bbc9ca1f4313337f522
+Authorization: Bearer {{authToken}}
+
+### 创建问题
+POST {{baseUrl}}/api/v1/question
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "province": "问题标题",
+    "city": "问题内容",
+    "position": "问题位置"
+}

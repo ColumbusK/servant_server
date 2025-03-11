@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", // Target JavaScript version
+    "module": "CommonJS", // Module system (CommonJS or ES6)
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Source directory
+    "strict": true, // Enable strict type-checking
+    "esModuleInterop": true, // Enable ES module interoperability
+    "skipLibCheck": true, // Skip type-checking for library files
+    "forceConsistentCasingInFileNames": true // Enable consistent casing in file names
+  },
+  "include": [
+    "src/**/*.ts"
+  ] // Include all TypeScript files in src
+}
