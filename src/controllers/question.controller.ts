@@ -35,3 +35,20 @@ export async function createQuestion(request: FastifyRequest<{ Body: { province:
     reply.status(500).send({ error: error.message });
   }
 }
+
+
+export async function findQuestionsByProvince(request: FastifyRequest<{ Params: { province: string } }>, reply: FastifyReply) {
+  try {
+    const { province } = request.params;
+    const questions = await QuestionModel.find({ province });
+
+    if (!questions) {
+      return reply.status(404).send({ error: 'Questions not found' });
+    }
+
+    reply.status(200).send(questions);
+  } catch (err) {
+    const error = err as Error;
+    reply.status(500).send({ error: error.message });
+  }
+}

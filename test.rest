@@ -12,6 +12,11 @@ Authorization: Bearer {{authToken}}
 GET {{baseUrl}}/api/v1/question/67c50bbc9ca1f4313337f522
 Authorization: Bearer {{authToken}}
 
+### 按省份查询问题
+GET {{baseUrl}}/api/v1/question/province/北京
+Authorization: Bearer {{authToken}}
+
+
 ### 创建问题
 POST {{baseUrl}}/api/v1/question
 Authorization: Bearer {{authToken}}

@@ -1,5 +1,7 @@
 const fastify = require("fastify")({ logger: true });
 const mongoose = require("mongoose");
+const cors = require("@fastify/cors");  // 更改这里
+
 require("dotenv").config();
 
 // 引入路由
@@ -30,6 +32,11 @@ async function start() {
       useUnifiedTopology: true,
     });
 
+    // 跨域
+    await fastify.register(cors, {  // 更改这里
+      origin: "*",
+      methods: ["GET", "PUT", "POST", "DELETE"],
+    });
     // 注册路由
     fastify.register(userRoutes, { prefix: `${routeConfig.prefix}/user` });  // 前缀为 /user );
     fastify.register(questionRoutes, { prefix: `${routeConfig.prefix}/question` });  // 前缀为 /question
