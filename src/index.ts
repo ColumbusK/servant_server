@@ -1,6 +1,7 @@
 const fastify = require("fastify")({ logger: true });
 const mongoose = require("mongoose");
 const cors = require("@fastify/cors");  // 更改这里
+import { initRedis } from "./libs/redis";
 
 require("dotenv").config();
 
@@ -11,7 +12,7 @@ import { questionRoutes } from "./routes/question.routes";
 mongoose.connect(process.env.MONGO_URI as string, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(()=>{
+}).then(() => {
   console.log("Database connected");
 }).catch((err: any) => {
   console.log(err);
@@ -32,6 +33,10 @@ async function start() {
       useUnifiedTopology: true,
     });
 
+    // 连接 Redis
+    console.log("Redis connecting...");
+    await initRedis(fastify);
+
     // 跨域
     await fastify.register(cors, {  // 更改这里
       origin: "*",
@@ -43,7 +48,7 @@ async function start() {
 
 
     // 监听端口
-    await fastify.listen({ port: 3001, host: "0.0.0.0"});
+    await fastify.listen({ port: 3001, host: "0.0.0.0" });
     fastify.log.info(`Server listening on ${fastify.server.address().port}`);
 
     console.log(`Server listening on ${fastify.server.address().port}`);
