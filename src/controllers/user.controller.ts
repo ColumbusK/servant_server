@@ -1,13 +1,13 @@
-const User = require('./models/User'); // CommonJS 导入
-const { FastifyRequest, FastifyReply } = require('fastify'); // 导入 Fastify 类型
+import { FastifyRequest, FastifyReply } from "fastify";
+import UserModel from "../models/user.model";
 
-async function createUser(request: typeof FastifyRequest, reply: typeof FastifyReply) {
+export async function createUser(request: FastifyRequest, reply: FastifyReply) {
   try {
     // 示例：从请求体中获取用户数据
     const { name, email } = request.body as { name: string; email: string };
 
     // 创建用户
-    const user = new User({ name, email });
+    const user = new UserModel({ name, email });
     await user.save();
 
     // 返回成功响应
@@ -18,4 +18,11 @@ async function createUser(request: typeof FastifyRequest, reply: typeof FastifyR
   }
 }
 
-module.exports = createUser; // CommonJS 导出
+export async function verifyUser(request: FastifyRequest<{ Body: { phonenumber: string, password: string } }>, reply: FastifyReply) {
+  try {
+    const { phonenumber, password } = request.body;
+    const user = await UserModel.findOne({ phonenumber });
+  } catch (error) {
+    console.log(error.message);
+  }
+}

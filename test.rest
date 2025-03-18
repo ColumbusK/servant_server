@@ -2,7 +2,7 @@
 @authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2M2ZDg3YzViNWE4MmIxNTZhZTBjYWQiLCJpYXQiOjE3NDEwODQ3OTZ9.-hW0VSZy5dHw1T2v-T9Kft5m7gJjpjQII0jCvJk12Po
 
 GET {{baseUrl}}/api/v1/user
-Authorization: Bearer {{authToken}}
+# Authorization: Bearer {{authToken}}
 
 ###
 GET {{baseUrl}}/api/v1/question
