@@ -9,6 +9,7 @@ import { envToLogger } from './utils/logger';
 
 // 插件
 import jwtPlugin from "./plugins/jwtPlugin";
+import signaturePlugin from './plugins/signaturePlugin';
 
 // 引入路由
 import { userRoutes } from "./routes/user.routes";
@@ -21,7 +22,19 @@ const fastify = Fastify({
 
 // Register parent error handler
 fastify.setErrorHandler((error, request, reply) => {
-  reply.status(500).send({ ok: false })
+  // 记录错误
+  fastify.log.error(error);
+
+  // 根据错误类型返回不同的状态码
+  const statusCode = error.statusCode || 500;
+
+  reply.status(statusCode).send({
+    ok: false,
+    error: {
+      message: error.message || '服务器内部错误',
+      statusCode,
+    }
+  });
 })
 
 // 注册
@@ -44,15 +57,22 @@ async function start() {
     if (red) {
       console.log("Redis connected");
     }
-    // 1. 注册 JWT 插件
-    await fastify.register(jwtPlugin);
 
-
-    // 2. 注册跨域
+    // 1. 注册基础插件
     await fastify.register(cors, {  // 更改这里
       origin: "*",
       methods: ["GET", "PUT", "POST", "DELETE"],
     });
+    await fastify.register(require('@fastify/sensible'));
+
+
+
+    // 2. 注册自定义插件
+    //  JWT 插件
+    await fastify.register(jwtPlugin);
+    // 签名插件
+    await fastify.register(signaturePlugin);
+
 
     // 3. 创建一个顶级路由来处理所有 API 路由
     await fastify.register(async function (instance) {

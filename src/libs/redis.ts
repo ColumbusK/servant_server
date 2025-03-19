@@ -65,6 +65,16 @@ export const redisHelpers = {
     await app.redis.del(`sms:${phone}`);
     console.log();
 
+  },
+  // 添加 nonce 相关的辅助方法
+  setNonce: async (app: FastifyInstance, nonce: string) => {
+    await app.redis.set(`nonce:${nonce}`, '1', {
+      EX: 600  // 10分钟过期
+    });
+  },
+
+  hasNonce: async (app: FastifyInstance, nonce: string) => {
+    return await app.redis.exists(`nonce:${nonce}`);
   }
 };
 
