@@ -3,14 +3,13 @@ import QuestionModel from "../models/question.model";
 import mongoose from 'mongoose';
 
 
-
 export async function findQuestion(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply
 ) {
   try {
     const { id } = request.params;
-    console.log("id", id);
+    console.log("id", id, request.user);
     const question = await QuestionModel.findById(id);
 
     if (!question) {

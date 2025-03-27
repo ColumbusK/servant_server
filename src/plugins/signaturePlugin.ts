@@ -4,17 +4,13 @@ import crypto from 'crypto';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { redisHelpers } from '../libs/redis';
 
-// 扩展 FastifyInstance 接口
-declare module 'fastify' {
-  interface FastifyInstance {
-    httpErrors: {
-      unauthorized(message?: string): Error;
-      // 添加其他需要的错误类型
-    };
-  }
-}
+// 导入 HttpErrors 接口
+
+import sensible, { HttpErrors } from '@fastify/sensible'
+
 
 export default fp(async (fastify: FastifyInstance) => {
+
   fastify.addHook('preHandler', async (req: FastifyRequest) => {
     const { 'x-sign-ts': ts, 'x-sign-nonce': nonce, 'x-sign': sign } = req.headers;
 

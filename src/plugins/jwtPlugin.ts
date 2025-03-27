@@ -18,8 +18,6 @@ export default fp(async function (fastify, opts) {
   fastify.decorate("jwtAuth", async function (request: FastifyRequest, reply: FastifyReply) {
     try {
       await request.jwtVerify();
-      console.log(request.user);
-
     } catch (error) {
       reply.status(401).send({ error: "Unauthorized" });
     }

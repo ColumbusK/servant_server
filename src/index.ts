@@ -8,8 +8,10 @@ require("dotenv").config();
 import { envToLogger } from './utils/logger';
 
 // 插件
+import sensible from "@fastify/sensible";
 import jwtPlugin from "./plugins/jwtPlugin";
 import signaturePlugin from './plugins/signaturePlugin';
+import { setupErrorHandler } from './plugins/errorHandler';
 
 // 引入路由
 import { userRoutes } from "./routes/user.routes";
@@ -63,7 +65,7 @@ async function start() {
       origin: "*",
       methods: ["GET", "PUT", "POST", "DELETE"],
     });
-    await fastify.register(require('@fastify/sensible'));
+    await fastify.register(sensible);
 
 
 
@@ -71,8 +73,8 @@ async function start() {
     //  JWT 插件
     await fastify.register(jwtPlugin);
     // 签名插件
-    await fastify.register(signaturePlugin);
-
+    // await fastify.register(signaturePlugin);
+    setupErrorHandler(fastify);
 
     // 3. 创建一个顶级路由来处理所有 API 路由
     await fastify.register(async function (instance) {
@@ -92,10 +94,9 @@ async function start() {
         //   }
         //   next();
         // });
-
+        // 添加签名验证
+        // await protectedRoutes.register(signaturePlugin);
         // 注册问题路由
-        await protectedRoutes.register(questionRoutes, { prefix: '/question' });
-
         await protectedRoutes.register(questionRoutes);
       }, { prefix: '/question' });
 
