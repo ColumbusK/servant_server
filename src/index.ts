@@ -95,7 +95,7 @@ async function start() {
         //   next();
         // });
         // 添加签名验证
-        // await protectedRoutes.register(signaturePlugin);
+        await protectedRoutes.register(signaturePlugin);
         // 注册问题路由
         await protectedRoutes.register(questionRoutes);
       }, { prefix: '/question' });

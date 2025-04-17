@@ -4,10 +4,6 @@ import crypto from 'crypto';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { redisHelpers } from '../libs/redis';
 
-// 导入 HttpErrors 接口
-
-import sensible, { HttpErrors } from '@fastify/sensible'
-
 
 export default fp(async (fastify: FastifyInstance) => {
 
