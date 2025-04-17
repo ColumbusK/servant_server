@@ -7,15 +7,15 @@ interface IProvinceParams {
 }
 
 
-export async function questionRoutes(app: FastifyInstance) {
-  app.get('/', { onRequest: [] }, (request, reply) => {
+export async function questionRoutes(fastify: FastifyInstance) {
+  fastify.get('/', { onRequest: [] }, (request, reply) => {
     reply.send('Hello World!');
   });
 
-  app.get('/:id', findQuestion); // 使用修正后的函数名
+  fastify.get('/:id', findQuestion); // 使用修正后的函数名
 
-  app.get('/province/:province', findQuestionsByProvince); // 使用修正后的函数名
+  fastify.get('/province/:province', findQuestionsByProvince); // 使用修正后的函数名
 
-  app.post('/', createQuestion);
-  // app.put('/:id', updateQuestion);
+  fastify.post('/', createQuestion);
+  // fastify.put('/:id', updateQuestion);
 }

@@ -29,22 +29,22 @@ interface ILoginBody {
 }
 
 
-export async function userRoutes(app: FastifyInstance) {
-  app.get('/', (request: FastifyRequest, reply: FastifyReply) => {
+export async function userRoutes(fastify: FastifyInstance) {
+  fastify.get('/', (request: FastifyRequest, reply: FastifyReply) => {
     return reply.send('Hello World!')
   });
 
-  app.get('/:id', (request: FastifyRequest<{ Params: IParams }>, reply: FastifyReply) => {
+  fastify.get('/:id', (request: FastifyRequest<{ Params: IParams }>, reply: FastifyReply) => {
     return reply.send(`Hello ${request.params.id}!`)
   });
 
-  app.post<{ Body: IRegisterBody }>('/register', createUser);
+  fastify.post<{ Body: IRegisterBody }>('/register', createUser);
   // 登录接口
-  app.post<{ Body: ILoginBody }>('/login', verifyUser);
+  fastify.post<{ Body: ILoginBody }>('/login', verifyUser);
 
 
   // 邮箱注册发送验证码
-  app.post<{ Body: { email: string } }>('/send-email-code', async (request, reply) => {
+  fastify.post<{ Body: { email: string } }>('/send-email-code', async (request, reply) => {
     const { email } = request.body;
     console.log(email);
 
@@ -55,7 +55,7 @@ export async function userRoutes(app: FastifyInstance) {
     }
     try {
       // 保存验证码到 Redis
-      await redisHelpers.setCode(app, email, code);
+      await redisHelpers.setCode(fastify, email, code);
       // 调用邮件服务发送验证码
       await sendMailCode(email, code);
       console.log(`发送验证码到 ${email}: ${code}`);
@@ -68,7 +68,7 @@ export async function userRoutes(app: FastifyInstance) {
 
 
   // 发送验证码
-  app.post<{ Body: ISendCodeBody }>('/send-code', async (request, reply) => {
+  fastify.post<{ Body: ISendCodeBody }>('/send-code', async (request, reply) => {
     const { phone } = request.body;
     const code = generateCode();
 
@@ -79,7 +79,7 @@ export async function userRoutes(app: FastifyInstance) {
 
     try {
       // 保存验证码到 Redis
-      await redisHelpers.setCode(app, phone, code);
+      await redisHelpers.setCode(fastify, phone, code);
       // 调用短信服务发送验证码
       // await sendSMS(phone, code); // 示例代码，请根据您的短信服务实现此函数
       console.log(`发送验证码到 ${phone}: ${code}`);
