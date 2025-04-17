@@ -104,7 +104,8 @@ async function start() {
 
 
     // 监听端口
-    fastify.listen({ port: 3001, host: "0.0.0.0" }, function (err, address) {
+    const port = parseInt(process.env.PORT as string) || 3000;
+    fastify.listen({ port, host: "0.0.0.0" }, function (err, address) {
       if (err) {
         fastify.log.error(err)
         process.exit(1)

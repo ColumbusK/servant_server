@@ -66,16 +66,16 @@ export async function createUser(request: FastifyRequest<{ Body: IRegisterBody }
   return reply.status(201).send({
     success: true,
     message: '注册成功',
-    data: {
-      accessToken: token,
-      user: userData
-    }
+    accessToken: token,
+    user: userData
   });
 }
 
 export async function verifyUser(request: FastifyRequest<{ Body: ILoginBody }>, reply: FastifyReply) {
   const { email, password } = request.body;
   const user = await UserModel.findOne({ email });
+  console.log(user);
+
 
   if (!user) {
     throw new Error("用户不存在！");
@@ -90,6 +90,6 @@ export async function verifyUser(request: FastifyRequest<{ Body: ILoginBody }>, 
   return reply.status(200).send({
     success: true,
     message: "登陆成功",
-    data: { accessToken: token, user: { username: user.username, email: user.email } },
+    accessToken: token, user: { username: user.username, email: user.email },
   })
 }
