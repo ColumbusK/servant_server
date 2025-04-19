@@ -9,9 +9,12 @@ export default fp(async (fastify: FastifyInstance) => {
 
   fastify.addHook('preHandler', async (req: FastifyRequest) => {
     const { 'x-sign-ts': ts, 'x-sign-nonce': nonce, 'x-sign': sign } = req.headers;
+    console.log('Signature headers', { ts, nonce, sign });
 
     // 1. 基础校验
     if (!ts || !nonce || !sign) {
+      console.log('Missing signature headers', { ts, nonce, sign });
+
       throw fastify.httpErrors.unauthorized('Missing signature headers');
     }
 
@@ -32,11 +35,11 @@ export default fp(async (fastify: FastifyInstance) => {
 
     // 4. 重构签名数据
     const raw = [
-      req.method,
+      req.method.toUpperCase(),
       encodeURIComponent(req.url),
       ts,
       nonce,
-      req.body ? JSON.stringify(req.body) : ''
+      req.body ? JSON.stringify(req.body) : '{}',
     ].join('|');
 
     // 5. 验证签名
@@ -44,7 +47,9 @@ export default fp(async (fastify: FastifyInstance) => {
       .createHmac('sha256', process.env.API_SECRET!)
       .update(raw)
       .digest('hex');
-
+    console.log('服务端签名原始字符串:', raw);
+    console.log('服务端生成的签名:', serverSign);
+    // 6. 比较签名
     if (serverSign !== sign) {
       throw fastify.httpErrors.unauthorized('Invalid signature');
     }
