@@ -10,6 +10,7 @@
     "forceConsistentCasingInFileNames": true // Enable consistent casing in file names
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/types/**/*.d.ts"
   ] // Include all TypeScript files in src
 }
