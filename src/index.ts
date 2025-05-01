@@ -16,6 +16,8 @@ import { setupErrorHandler } from './plugins/errorHandler';
 // 引入路由
 import { userRoutes } from "./routes/user.routes";
 import { questionRoutes } from "./routes/question.routes";
+import { unitRoutes } from "./routes/unit.routes";
+
 
 // Instantiate the framework
 const fastify = Fastify({
@@ -81,6 +83,10 @@ async function start() {
       // 注册用户路由
       await instance.register(userRoutes, {
         prefix: '/user'
+      });
+      // 注册单位路由
+      await instance.register(unitRoutes, {
+        prefix: '/units'
       });
 
       // 注册问题路由，并添加认证
