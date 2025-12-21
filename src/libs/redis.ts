@@ -4,6 +4,7 @@ import { FastifyInstance } from 'fastify';
 require("dotenv").config();
 
 
+
 // 类型定义增强
 declare module 'fastify' {
   interface FastifyInstance {
@@ -15,7 +16,7 @@ declare module 'fastify' {
 export const initRedis = async (app: FastifyInstance) => {
   console.log("initRedis connecting...");
 
-
+  console.log(process.env.REDIS_HOST);
   const redis = createClient({
     username: 'default',
     password: process.env.REDIS_PASSWORD,
