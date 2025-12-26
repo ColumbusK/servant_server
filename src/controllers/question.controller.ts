@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import QuestionModel from "../models/question.model";
+import FavoriteModel from '../models/favorite.model';
 import mongoose from 'mongoose';
 
 
@@ -58,5 +59,38 @@ export async function findQuestionsByProvince(request: FastifyRequest<{ Params: 
   } catch (err) {
     const error = err as Error;
     reply.status(500).send({ error: error.message });
+  }
+}
+
+// 收藏或取消收藏 (切换模式)
+export async function toggleFavorite(request: FastifyRequest<{ Body: { questionId: string } }>, reply: FastifyReply) {
+  try {
+    // 假设你已经有中间件把 userId 放入了 request.user
+    const userId = (request as any).user.id;
+    const { questionId } = request.body;
+
+    const existing = await FavoriteModel.findOne({ userId, questionId });
+
+    if (existing) {
+      await FavoriteModel.deleteOne({ _id: existing._id });
+      return reply.send({ message: '已取消收藏', isFavorited: false });
+    } else {
+      await FavoriteModel.create({ userId, questionId });
+      return reply.send({ message: '收藏成功', isFavorited: true });
+    }
+  } catch (err) {
+    reply.status(500).send({ error: '操作失败' });
+  }
+}
+
+// 获取当前用户的收藏列表
+export async function getMyFavorites(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const userId = (request as any).user.id;
+    // 连表查询题目详细信息
+    const favorites = await FavoriteModel.find({ userId }).populate('questionId');
+    reply.send(favorites.map(f => f.questionId));
+  } catch (err) {
+    reply.status(500).send({ error: '获取失败' });
   }
 }
