@@ -61,7 +61,7 @@ export async function createUser(request: FastifyRequest<{ Body: IRegisterBody }
   // 5. 删除验证码
   await redisHelpers.delCode(request.server, email);
   // 6. 生成 JWT token
-  const token = await generateToken(reply, newUser._id)
+  const token = await generateToken(reply, newUser.id)
 
   return reply.status(201).send({
     success: true,
@@ -85,11 +85,18 @@ export async function verifyUser(request: FastifyRequest<{ Body: ILoginBody }>, 
   if (!isMatch) {
     throw new Error("密码错误！");
   }
-  const token = await generateToken(reply, user._id);
+  const token = await generateToken(reply, user.id);
 
   return reply.status(200).send({
     success: true,
     message: "登陆成功",
-    accessToken: token, user: { username: user.username, email: user.email },
+    accessToken: token,
+    user: {
+      uid: user._id, // 增加 ID
+      username: user.username,
+      email: user.email,
+      vip: user.vip || false, // 增加 VIP 状态
+      role: user.role || 'normal' // 增加角色
+    },
   })
 }
