@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { findQuestion, createQuestion, findQuestionsByProvince, toggleFavorite, getMyFavorites } from "../controllers/question.controller";
+import { getAnswerByQuestionId } from "../controllers/answer.controller";
 
 // 定义路由参数接口
 interface IProvinceParams {
@@ -18,6 +19,11 @@ export async function questionRoutes(fastify: FastifyInstance) {
   // 收藏/取消收藏题目
   fastify.post('/favorite', toggleFavorite);
 
+
+  // 获取指定题目的参考答案
+  // 访问路径: GET /api/v1/question/67c50bbc9ca1f4313337f522/answer
+  fastify.get('/answer/:questionId', getAnswerByQuestionId);
+
   // 获取指定题目详情
   fastify.get('/:id', findQuestion); // 使用修正后的函数名
 
@@ -27,4 +33,5 @@ export async function questionRoutes(fastify: FastifyInstance) {
   // 创建新题目
   fastify.post('/', createQuestion);
   // fastify.put('/:id', updateQuestion);
+
 }
