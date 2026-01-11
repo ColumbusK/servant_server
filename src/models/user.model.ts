@@ -16,6 +16,7 @@ interface UserT extends Document {
   // 新增字段
   selected_units: ObjectId[]; // 存储单位 ID 数组
   tags: string[];                             // 存储标签数组
+  end_date: Date; // 存储面试时间，用于倒计时
   created_at: Date;
 }
 
@@ -47,6 +48,11 @@ const userSchema = new Schema({
   tags: {
     type: [String],
     default: []
+  },
+  // 新增字段：面试时间（用于前端显示倒计时）
+  end_date: {
+    type: Date,
+    default: null // 初始可以为 null，待用户设置
   },
   created_at: {
     type: Date,

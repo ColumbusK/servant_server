@@ -66,8 +66,9 @@ export async function findQuestionsByProvince(request: FastifyRequest<{ Params: 
 export async function toggleFavorite(request: FastifyRequest<{ Body: { questionId: string } }>, reply: FastifyReply) {
   try {
     // 假设你已经有中间件把 userId 放入了 request.user
-    const userId = (request as any).user.id;
+    const userId = (request as any).user.userId;
     const { questionId } = request.body;
+    console.log("toggleFavorite questionId", questionId, "userId", userId);
 
     const existing = await FavoriteModel.findOne({ userId, questionId });
 
@@ -86,11 +87,24 @@ export async function toggleFavorite(request: FastifyRequest<{ Body: { questionI
 // 获取当前用户的收藏列表
 export async function getMyFavorites(request: FastifyRequest, reply: FastifyReply) {
   try {
-    const userId = (request as any).user.id;
+    const userId = (request as any).user.userId;
     // 连表查询题目详细信息
     const favorites = await FavoriteModel.find({ userId }).populate('questionId');
-    reply.send(favorites.map(f => f.questionId));
+    reply.send(favorites);
   } catch (err) {
     reply.status(500).send({ error: '获取失败' });
+  }
+}
+
+// 检查某题目是否被当前用户收藏
+export async function checkFavorite(request: FastifyRequest<{ Params: { questionId: string } }>, reply: FastifyReply) {
+  try {
+    const userId = (request as any).user.userId;
+    const { questionId } = request.params;
+    const existing = await FavoriteModel.findOne({ userId, questionId });
+    const isFavorited = !!existing;
+    reply.send({ isFavorited });
+  } catch (err) {
+    reply.status(500).send({ error: '检查失败' });
   }
 }

@@ -96,7 +96,50 @@ export async function verifyUser(request: FastifyRequest<{ Body: ILoginBody }>, 
       username: user.username,
       email: user.email,
       vip: user.vip || false, // 增加 VIP 状态
-      role: user.role || 'normal' // 增加角色
+      role: user.role || 'normal', // 增加角色
+      end_date: user.end_date // 增加面试时间
     },
   })
+}
+
+
+export async function setUserInterviewDate(
+  request: FastifyRequest<{ Body: { end_date: string | number } }>,
+  reply: FastifyReply
+) {
+  try {
+    // 1. 从 JWT 中获取当前用户 ID
+    console.log("request.user", (request as any).user);
+    const userId = (request as any).user.userId;
+
+    const { end_date } = request.body;
+
+    // 2. 校验日期合法性
+    const targetDate = new Date(end_date);
+    if (isNaN(targetDate.getTime())) {
+      return reply.status(400).send({ ok: false, error: "无效的日期格式" });
+    }
+
+    // 3. 更新数据库
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { end_date: targetDate },
+      { new: true } // 返回更新后的文档
+    ).select('username end_date');
+
+    if (!updatedUser) {
+      return reply.status(404).send({ ok: false, error: "用户不存在" });
+    }
+
+    reply.send({
+      ok: true,
+      message: "面试时间设置成功",
+      data: {
+        end_date: updatedUser.end_date
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    reply.status(500).send({ ok: false, error: (err as Error).message });
+  }
 }

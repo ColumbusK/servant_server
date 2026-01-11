@@ -43,6 +43,7 @@ export async function userRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: ILoginBody }>('/login', verifyUser);
 
 
+
   // 邮箱注册发送验证码
   fastify.post<{ Body: { email: string } }>('/send-email-code', async (request, reply) => {
     const { email } = request.body;
@@ -88,5 +89,6 @@ export async function userRoutes(fastify: FastifyInstance) {
       return reply.status(500).send({ success: false });
     }
   });
+
 }
 
