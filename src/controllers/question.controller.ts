@@ -90,7 +90,7 @@ export async function getMyFavorites(request: FastifyRequest, reply: FastifyRepl
     const userId = (request as any).user.userId;
     // 连表查询题目详细信息
     const favorites = await FavoriteModel.find({ userId }).populate('questionId');
-    reply.send(favorites);
+    reply.send(favorites.map(fav => fav.questionId));
   } catch (err) {
     reply.status(500).send({ error: '获取失败' });
   }
