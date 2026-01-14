@@ -34,9 +34,11 @@ export default fp(async (fastify: FastifyInstance) => {
 
 
     // 4. 重构签名数据
+    const urlPath = req.url.split('?')[0]; // 截掉问号后面的内容
+
     const raw = [
       req.method.toUpperCase(),
-      encodeURIComponent(req.url),
+      encodeURIComponent(urlPath), // 现在这里是 /api/v1/question/user-answer
       ts,
       nonce,
       req.body ? JSON.stringify(req.body) : '{}',

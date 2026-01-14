@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { findQuestion, createQuestion, findQuestionsByProvince, toggleFavorite, getMyFavorites, checkFavorite } from "../controllers/question.controller";
-import { getAnswerByQuestionId } from "../controllers/answer.controller";
+import { getAnswerByQuestionId, saveUserAnswer, getLatestUserAnswer } from "../controllers/answer.controller";
 import { setUserInterviewDate } from "../controllers/user.controller";
 
 // 定义路由参数接口
@@ -25,6 +25,12 @@ export async function questionRoutes(fastify: FastifyInstance) {
   // 获取指定题目的参考答案
   // 访问路径: GET /api/v1/question/67c50bbc9ca1f4313337f522/answer
   fastify.get('/answer/:questionId', getAnswerByQuestionId);
+
+  // 保存用户答案
+  fastify.post('/user-answer', saveUserAnswer);
+
+  // 获取用户答案
+  fastify.get('/user-answer', getLatestUserAnswer);
 
   // 获取指定题目详情
   fastify.get('/:id', findQuestion); // 使用修正后的函数名
