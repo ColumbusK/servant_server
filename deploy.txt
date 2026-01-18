@@ -1,0 +1,32 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# 安装 pnpm (如果你使用 npm 可以删除这行并把下面的 pnpm 换成 npm)
+RUN npm install -g pnpm
+
+COPY package*.json pnpm-lock.yaml* ./
+
+# 安装依赖
+RUN pnpm install
+
+COPY . .
+
+# 暴露 3000 (容器内部端口)
+EXPOSE 3000
+
+# 启动命令
+CMD ["pnpm", "run", "dev"]
+
+
+
+docker build -t servant-server .
+
+
+
+docker run -d \
+  --name servant-server-instance \
+  -p 8029:3000 \
+  --env-file .env \
+  --restart always \
+  servant-server
